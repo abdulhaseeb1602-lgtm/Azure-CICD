@@ -1,0 +1,27 @@
+name: Azure CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Azure Resource Group
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az group create --name rg-cicd-practice --location canadacentral
+            az group show --name rg-cicd-practice --output table
